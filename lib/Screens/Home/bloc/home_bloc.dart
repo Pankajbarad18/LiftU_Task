@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:foodish/Data/API/ApiServices.dart';
 import 'package:foodish/Data/FoodModel.dart';
 import 'package:foodish/Data/cart_item.dart';
 import 'package:foodish/Data/wishlist_items.dart';
@@ -26,33 +27,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<FutureOr<void>> homeInitialEvent(
       HomeInitialEvent event, Emitter<HomeState> emit) async {
     emit(HomeLoadingBar());
-    await Future.delayed(const Duration(seconds: 3));
+    FoodProduct.foodProductList =
+        await APIServices.getCategoryProducts(event.categoryId);
+    FoodProduct.foodCategoryList = await APIServices.getCategory();
     emit(HomeSucessLoaded(
-        products: FoodProduct.foodProductList
-            .map((e) => ProductModel(
-                id: e['id'],
-                name: e['name'],
-                description: e['description'],
-                price: e['price'],
-                imageURL: e['imageUrl'],
-                rating: e['rating']))
-            .toList()));
+        products: FoodProduct.foodProductList!,
+        category: FoodProduct.foodCategoryList!));
   }
 
   FutureOr<void> navigatetoCart(NavigatetoCart event, Emitter<HomeState> emit) {
-    print('navigation button clicked');
     emit(CartNavigateClicked());
   }
 
   FutureOr<void> navigatetoWishlist(
       NavigatetoWishlist event, Emitter<HomeState> emit) {
-    print('wishlist navigation button clicked');
     emit(LikeNavigateClicked());
   }
 
   FutureOr<void> homeCartClicked(
       HomeCartClicked event, Emitter<HomeState> emit) {
-    print('cart is clicked');
     cartItems.add(event.itemclicked);
 
     emit(ItemAddedInCart());
@@ -60,7 +53,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   FutureOr<void> homeLikeCLicked(
       HomeLikeCLicked event, Emitter<HomeState> emit) {
-    print('like is clicked');
     wishListItems.add(event.itemclicked);
 
     emit(ItemAddedInWishList());

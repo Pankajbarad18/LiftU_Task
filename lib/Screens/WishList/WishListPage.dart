@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:foodish/Screens/WishList/WishListFoodTile.dart';
+import 'package:foodish/Screens/WishList/WishListProductTile.dart';
 import 'package:foodish/Screens/WishList/bloc/wishlist_bloc.dart';
 
 class WishListPage extends StatefulWidget {
@@ -32,15 +32,18 @@ class _WishListPageState extends State<WishListPage> {
           switch (state.runtimeType) {
             case ItemforWishList:
               final successState = state as ItemforWishList;
-              return ListView.builder(
-                  itemCount: successState.wishListItems.length,
-                  itemBuilder: (context, index) {
-                    return WishListFoodTile(
-                        productModel: successState.wishListItems[index],
-                        wishlistBloc: wishlistBloc);
-                  });
+              return Scaffold(
+                appBar: AppBar(),
+                body: ListView.builder(
+                    itemCount: successState.wishListItems.length,
+                    itemBuilder: (context, index) {
+                      return WishListProductTile(
+                          productModel: successState.wishListItems[index],
+                          wishlistBloc: wishlistBloc);
+                    }),
+              );
             default:
-              return SizedBox();
+              return const SizedBox();
           }
         },
       ),

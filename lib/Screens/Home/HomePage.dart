@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:foodish/Data/API/ApiServices.dart';
 import 'package:foodish/Screens/Cart/CartPage.dart';
-import 'package:foodish/Screens/Home/Food_Tile.dart';
+import 'package:foodish/Screens/Home/Product_Tile.dart';
 import 'package:foodish/Screens/Home/bloc/home_bloc.dart';
+import 'package:foodish/Screens/Home/widgets/tags.dart';
 import 'package:foodish/Screens/WishList/WishListPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,11 +16,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+int selected = 1;
+
 class _HomePageState extends State<HomePage> {
   HomeBloc homeBloc = HomeBloc();
   @override
   void initState() {
-    homeBloc.add(HomeInitialEvent());
+    homeBloc.add(HomeInitialEvent(categoryId: 1));
     super.initState();
   }
 
@@ -64,14 +68,50 @@ class _HomePageState extends State<HomePage> {
                       },
                       icon: const Icon(Icons.shopping_bag_outlined))
                 ]),
-                body: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: sucessState.products.length,
-                    itemBuilder: (context, index) {
-                      return FoodTile(
-                          homeBloc: homeBloc,
-                          productModel: sucessState.products[index]);
-                    }));
+                body: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(12),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                            hintText: "Search Here",
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)))),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: sucessState.category.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selected = index + 1;
+                                  homeBloc.add(
+                                      HomeInitialEvent(categoryId: selected));
+                                });
+                              },
+                              child: TagTile(
+                                  category: sucessState.category[index],
+                                  index: selected),
+                            );
+                          }),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: sucessState.products.length,
+                          itemBuilder: (context, index) {
+                            return ProductTile(
+                                homeBloc: homeBloc,
+                                productModel: sucessState.products[index]);
+                          }),
+                    ),
+                  ],
+                ));
           case HomeErrorLoaded:
             return const Scaffold(
               body: Center(

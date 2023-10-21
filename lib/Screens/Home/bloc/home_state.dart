@@ -13,7 +13,9 @@ class HomeLoadingBar extends HomeState {}
 
 class HomeSucessLoaded extends HomeState {
   final List<ProductModel> products;
-  HomeSucessLoaded({required this.products});
+  final List<Category> category;
+
+  HomeSucessLoaded({required this.category, required this.products});
 }
 
 class HomeErrorLoaded extends HomeState {}

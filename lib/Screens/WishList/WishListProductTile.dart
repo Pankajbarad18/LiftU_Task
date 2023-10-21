@@ -1,14 +1,14 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:foodish/Screens/Cart/bloc/cart_bloc.dart';
 import 'package:foodish/Screens/Home/HomeDataModel/DataModel.dart';
+import 'package:foodish/Screens/WishList/bloc/wishlist_bloc.dart';
 
-class CartFoodTile extends StatelessWidget {
+class WishListProductTile extends StatelessWidget {
   final ProductModel productModel;
-  final CartBloc cartBloc;
-  const CartFoodTile(
-      {super.key, required this.productModel, required this.cartBloc});
+  final WishlistBloc wishlistBloc;
+  const WishListProductTile(
+      {super.key, required this.productModel, required this.wishlistBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,10 @@ class CartFoodTile extends StatelessWidget {
           decoration: BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.fill,
-                  image: NetworkImage(productModel.imageURL))),
+                  image: NetworkImage(productModel.images[0]))),
         ),
         Text(
-          productModel.name,
+          productModel.title,
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(
@@ -46,14 +46,12 @@ class CartFoodTile extends StatelessWidget {
               children: [
                 IconButton(
                     onPressed: () {
-                      // homeBloc.add(HomeLikeCLicked(productModel));
+                      wishlistBloc.add(RemoveItem(deleteItem: productModel));
                     },
-                    icon: const Icon(Icons.favorite_border)),
+                    icon: const Icon(Icons.favorite)),
                 IconButton(
-                    onPressed: () {
-                      cartBloc.add(CartRemoveItem(productModel));
-                    },
-                    icon: const Icon(Icons.shopping_bag))
+                    onPressed: () {},
+                    icon: const Icon(Icons.shopping_bag_outlined))
               ],
             )
           ],
